@@ -19,6 +19,33 @@ const Cart = (props) => {
     cartCtx.addItem({ ...item, amount: 1 });
   };
 
+  const orderHandler = (event) => {
+    event.preventDefault();
+
+    fetch("http://localhost:3000/api/orders", {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: cartCtx.items,
+        totalAmount: cartCtx.totalAmount,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        cartCtx.checkout();
+        setTimeout(() => {
+          props.onClose();
+        }, 2000);
+
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => (
@@ -45,7 +72,11 @@ const Cart = (props) => {
         <button className={classes["button--alt"]} onClick={props.onClose}>
           Close
         </button>
-        {hasItems && <button className={classes.button}>Order</button>}
+        {hasItems && (
+          <button className={classes.button} onClick={orderHandler}>
+            Order
+          </button>
+        )}
       </div>
     </Modal>
   );
