@@ -1,4 +1,5 @@
 const products = require("./routes/products");
+const orders = require("./routes/orders");
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/products", products);
+app.use("/api/orders", orders);
 
 app.get("/", (req, res) => {
   res.send(new Date().toLocaleTimeString());
